@@ -1,8 +1,8 @@
 import React from 'react'
 
-const Search = (props) => {
+const Search = ({searchTerm, setSearchTerm}) => {
   return (
-    <div className="text-white text-3xl">{props.searchTerm}</div>
+    <div className="text-white text-3xl">{searchTerm}</div>
   )
 }
 
