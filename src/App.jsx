@@ -7,11 +7,11 @@ const Card = ({title}) => {
 
   useEffect(() => {
       console.log(`${title} has been liked: ${hasLiked}`);
-  });
+  }, [hasLiked]);
 
   return (
     <div className="card" onClick={() => setCount(count + 1)}>
-      <h2>{title} <br/> {count}</h2>
+      <h2>{title} <br/> {count || null}</h2>
 
       <button onClick={() => setHasLiked(!hasLiked)}>
         {hasLiked ? "❤️" : "🤍"}
