@@ -8,22 +8,21 @@ const Card = ({title}) => {
     <div className="card">
       <h2>{title}</h2>
 
-      {/* <button onClick={(setHasLiked(true))}>
+      <button onClick={() => setHasLiked(true)}>
         Like
-      </button> */}
-
-    </div>  
+      </button>
+    </div>
   )
 }
 
 const App = () => {
-  
+
   return (
     <div className="card-container">
       <Card title="Star Wars" rating={5} isCool={true} />
       <Card title="Avatar" />
       <Card title="The Lion King" />
-    </div>  
+    </div>
   )
 }
 
