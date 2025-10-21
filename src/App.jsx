@@ -17,7 +17,7 @@ const App = () => {
             Without the Hassel
           </h1>
         </header>
-        {/* <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm}/> */}
+        <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
       </div>
     </main>
   );
