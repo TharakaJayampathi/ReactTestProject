@@ -1,20 +1,23 @@
-const Card = () => {
+import { useState } from "react"
+
+const Card = ({title}) => {
+
+  const [hasLiked, setHasLiked] = useState(false);
+
   return (
-    <div>
-      <h2>Functional Arrow Component</h2>
+    <div className="card">
+      <h2>{title}</h2>
     </div>  
   )
 }
 
 const App = () => {
+  
   return (
-    <div>
-      <h2>Functional Arrow Component</h2>
-
-      <Card />
-      <Card />
-      <Card />
-
+    <div className="card-container">
+      <Card title="Star Wars" rating={5} isCool={true} />
+      <Card title="Avatar" />
+      <Card title="The Lion King" />
     </div>  
   )
 }
