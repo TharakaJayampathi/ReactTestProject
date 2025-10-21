@@ -1,6 +1,10 @@
-import React from "react";
+import { useState } from "react";
+import Search from "../components/Search";
 
 const App = () => {
+
+  const [searchTerm, setSearchTerm] = useState('Tharaka');
+
   return (
     <main>
       <div className="pattern"></div>
@@ -13,7 +17,7 @@ const App = () => {
             Without the Hassel
           </h1>
         </header>
-        <p>Search</p>
+        {/* <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm}/> */}
       </div>
     </main>
   );
