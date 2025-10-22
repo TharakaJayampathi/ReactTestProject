@@ -19,33 +19,36 @@ const App = () => {
   const [movieList, setMovieList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchMovies = async (maxPages, query = '') => {
+  const fetchMovies = async (maxPages, query = "") => {
     setIsLoading(true);
     setErrorMessage("");
 
     try {
       let allMovies = [];
 
-      for (let page = 1; page <= maxPages; page++) {
-        const endpoint = query 
-        ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}` 
-        : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc&page=${page}`;
-        const response = await fetch(endpoint, API_OPTIONS);
+      if (query !== "") {
+      } else {
+        for (let page = 1; page <= maxPages; page++) {
+          const endpoint = query
+            ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
+            : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc&page=${page}`;
+          const response = await fetch(endpoint, API_OPTIONS);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch movies");
+          if (!response.ok) {
+            throw new Error("Failed to fetch movies");
+          }
+
+          const data = await response.json();
+
+          if (data.results && data.results.length > 0) {
+            allMovies = [...allMovies, ...data.results];
+            console.log(`Page ${page} fetched (${data.results.length} movies)`);
+          } else {
+            console.log(`No results on page ${page}`);
+            break;
+          }
+          await new Promise((r) => setTimeout(r, 300));
         }
-
-        const data = await response.json();
-
-        if (data.results && data.results.length > 0) {
-          allMovies = [...allMovies, ...data.results];
-          console.log(`Page ${page} fetched (${data.results.length} movies)`);
-        } else {
-          console.log(`No results on page ${page}`);
-          break;
-        }
-        await new Promise((r) => setTimeout(r, 300));
       }
 
       console.log("Total Movies Fetched:", allMovies.length);
@@ -59,8 +62,13 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetchMovies(5, searchTerm);
-  }, []);
+    const maxPages = 10;
+    if (searchTerm.trim() !== "") {
+      fetchMovies(maxPages, searchTerm);
+    } else {
+      fetchMovies(maxPages);
+    }
+  }, [searchTerm]);
 
   return (
     <main>
