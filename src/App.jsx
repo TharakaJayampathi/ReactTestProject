@@ -19,7 +19,7 @@ const App = () => {
   const [movieList, setMovieList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchMovies = async (maxPages) => {
+  const fetchMovies = async (maxPages, query = '') => {
     setIsLoading(true);
     setErrorMessage("");
 
@@ -27,7 +27,9 @@ const App = () => {
       let allMovies = [];
 
       for (let page = 1; page <= maxPages; page++) {
-        const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc&page=${page}`;
+        const endpoint = query 
+        ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}` 
+        : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc&page=${page}`;
         const response = await fetch(endpoint, API_OPTIONS);
 
         if (!response.ok) {
@@ -57,7 +59,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetchMovies(5);
+    fetchMovies(5, searchTerm);
   }, []);
 
   return (
