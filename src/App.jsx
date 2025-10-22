@@ -27,11 +27,38 @@ const App = () => {
       let allMovies = [];
 
       if (query !== "") {
+        try {
+          const endpoint = `${API_BASE_URL}/search/movie?query=${encodeURIComponent(
+            query
+          )}`;
+          const response = await fetch(endpoint, API_OPTIONS);
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch movies");
+          }
+
+          const data = await response.json();
+          console.log(data);
+
+          if (data.Response === "False") {
+            setErrorMessage(data.Error || "Failed to fetch movies");
+            setMovieList([]);
+            return;
+          }
+
+          console.log("Result List", data.results);
+          allMovies = data.results;
+          console.log("Total Movies Fetched:", allMovies.length);
+          setMovieList(allMovies);
+        } catch (error) {
+          console.error(`Error fetching movies: ${error}`);
+          setErrorMessage("Error fetching movies. Please try again later.");
+        } finally {
+          setIsLoading(false);
+        }
       } else {
         for (let page = 1; page <= maxPages; page++) {
-          const endpoint = query
-            ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
-            : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc&page=${page}`;
+          const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc&page=${page}`;
           const response = await fetch(endpoint, API_OPTIONS);
 
           if (!response.ok) {
@@ -62,11 +89,10 @@ const App = () => {
   };
 
   useEffect(() => {
-    const maxPages = 10;
     if (searchTerm.trim() !== "") {
-      fetchMovies(maxPages, searchTerm);
+      fetchMovies(0, searchTerm);
     } else {
-      fetchMovies(maxPages);
+      fetchMovies(10, searchTerm);
     }
   }, [searchTerm]);
 
