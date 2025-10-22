@@ -19,29 +19,35 @@ const App = () => {
   const [movieList, setMovieList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchMovies = async () => {
+  const fetchMovies = async (maxPages = 5) => {
     setIsLoading(true);
     setErrorMessage("");
 
     try {
-      const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
-      const response = await fetch(endpoint, API_OPTIONS);
+      let allMovies = [];
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch movies");
+      for (let page = 1; page <= maxPages; page++) {
+        const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc&page=${page}`;
+        const response = await fetch(endpoint, API_OPTIONS);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch movies");
+        }
+
+        const data = await response.json();
+
+        if (data.results && data.results.length > 0) {
+          allMovies = [...allMovies, ...data.results];
+          console.log(`Page ${page} fetched (${data.results.length} movies)`);
+        } else {
+          console.log(`No results on page ${page}`);
+          break;
+        }
+        await new Promise((r) => setTimeout(r, 300));
       }
 
-      const data = await response.json();
-      console.log(data);
-
-      if (data.Response === "False") {
-        setErrorMessage(data.Error || "Failed to fetch movies");
-        setMovieList([]);
-        return;
-      }
-
-      console.log("Result List", data.results);
-      setMovieList(data.results || []);
+      console.log("Total Movies Fetched:", allMovies.length);
+      setMovieList(allMovies);
     } catch (error) {
       console.error(`Error fetching movies: ${error}`);
       setErrorMessage("Error fetching movies. Please try again later.");
@@ -51,7 +57,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetchMovies();
+    fetchMovies(5);
   }, []);
 
   return (
@@ -80,7 +86,7 @@ const App = () => {
                 // <p key={movie.id} className="text-white">
                 //   {movie.title}
                 // </p>
-                 <MovieCard key={movie.id} movie={movie}/>
+                <MovieCard key={movie.id} movie={movie}/>
               ))}
             </ul>
           )}
